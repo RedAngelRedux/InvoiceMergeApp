@@ -129,6 +129,7 @@ Weights/
 Rapid/
 Unison/
 Misc/
+Waybill/
 # Temporarily Ignore Files meant for feature/add-gui
 **/folder_configurations.json
 **/gui-main.py
