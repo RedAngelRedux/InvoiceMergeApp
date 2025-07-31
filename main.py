@@ -33,9 +33,13 @@ def main():
 
         # Email Invoices
         EXCEL_FILE = "email_map.xlsx"
-        tab = input("Enter Group Name to Email: ").strip()
-        email_all_invoices(EXCEL_FILE,tab,timestamped_folder)
-        print(f"All messages processed for Group {tab}")
+        while True:
+            tab = input("Enter Group Name to Email: ").strip()
+            email_all_invoices(EXCEL_FILE,tab,timestamped_folder)
+            print(f"All messages processed for Group {tab}]n")
+            choice = input("Press 1 to email another group or 2 to end the program: ").strip()
+            if choice != "1":
+                break
 
         # Provide Successful Ending Text to the User
         print("Current working directory: ", os.getcwd())
