@@ -1,11 +1,11 @@
 import os
+import datetime
 
 def validate_folders(folders):
     for key, path in folders.items():
         if not os.path.exists(path):            
             return [False, key]
     return [True, ""]
-
 
 def get_default_folder_paths():
     
@@ -29,4 +29,11 @@ def get_default_folder_paths():
     }
 
     return folder_names
+
+def create_timestamped_folder():
+    now = datetime.datetime.now()
+    timestamped_folder = now.strftime('%y%m_Invoices')
+    os.makedirs(timestamped_folder, exist_ok=True)
+    return timestamped_folder
+
 

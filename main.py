@@ -1,17 +1,11 @@
 import os
-import datetime
 import msvcrt
 
-from core.folders import get_default_folder_paths, validate_folders
+from core.folders import get_default_folder_paths, validate_folders, create_timestamped_folder
 from core.invoice_processor import extract_number, process_all_folders
 from core.waybill import split_waybill_pdfs
 from core.merger import merge_all_invoices, override_matching_files
-
-def create_timestamped_folder():
-    now = datetime.datetime.now()
-    timestamped_folder = now.strftime('%y%m_Invoices')
-    os.makedirs(timestamped_folder, exist_ok=True)
-    return timestamped_folder
+from core.excel_handler import email_all_invoices
 
 def main():
 
@@ -36,6 +30,12 @@ def main():
         timestamped_folder = create_timestamped_folder()
         merge_all_invoices(folders,timestamped_folder)
         override_matching_files(folders['comet'],timestamped_folder)
+
+        # Email Invoices
+        EXCEL_FILE = "email_map.xlsx"
+        tab = input("Enter Group Name to Email: ").strip()
+        email_all_invoices(EXCEL_FILE,tab,timestamped_folder)
+        print(f"All messages processed for Group {tab}")
 
         # Provide Successful Ending Text to the User
         print("Current working directory: ", os.getcwd())
