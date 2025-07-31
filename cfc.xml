@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate>
+  <Subject>Invoice for Account #[ACCOUNT]</Subject>
+  <Body>
+    Dear Customer,
+
+    Please find attached your invoice for account #[ACCOUNT]. If you have any questions or concerns, feel free to reply to this message.
+
+    Thank you for your continued partnership.
+  </Body>
+  <Signature>
+    Best regards,  
+    CFC Billing Department  
+    Phone: (951) 781-1000  
+    Email: ar@cfcnetworkinc.com
+  </Signature>
+</EmailTemplate>
