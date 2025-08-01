@@ -1,0 +1,33 @@
+{
+    "program_title": "INVOICE MERGE by GloboWeb",
+    "main_menu": {
+        "title": "Main Menu",
+        "merge_invoices": "Merge Invoices",
+        "email_invoices": "Email Invoices",
+        "update_settings": "Update Settings",
+        "exit_application": "Exit Application"
+    },
+    "merge_menu": {
+        "title": "Invoice Merge"
+    },
+    "email_menu": {
+        "title": "Email Invoices"
+    },
+    "settings_menu": {
+        "title": "Settings",
+        "update_folders": "Update Folders",
+        "update_files": "Update Files",
+        "update_smtp": "Update SMTP"
+    },
+    "messages": {
+        "error_file_not_found": "File not found.",
+        "error_folder_not_found": "Folder not found.",
+        "success_merge": "Invoices successfully merged.",
+        "success_email_sent": "Sent email on {{timestamp}}"
+    },
+    "prompts": {
+        "select_menu_item": "Please enter a menu number: ",
+        "review_answers": "Please review your answers: ",
+        "confirm_prompt": "Press 1 to proceed, 2 to change your answers, or [ESC] to quit: "
+    }
+}

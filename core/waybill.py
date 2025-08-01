@@ -37,10 +37,10 @@ def split_waybill_pdfs(folder):
                     out_doc.insert_pdf(doc, from_page=p, to_page=p)
                 out_path = os.path.join(folder,f"{acct}_Waybill.pdf")
                 out_doc.save(out_path)     
-                if os.path.exists(out_path) and os.path.getsize(out_path) > 0:
-                    print(f"✅ File saved and non-empty: {out_path}")
-                else:
-                    print(f"⚠️ File missing or empty: {out_path}")           
+                # if os.path.exists(out_path) and os.path.getsize(out_path) > 0:
+                #     print(f"✅ File saved and non-empty: {out_path}")
+                # else:
+                #     print(f"⚠️ File missing or empty: {out_path}")           
                 out_doc.close()
 
             doc.close()

@@ -90,11 +90,12 @@ def override_matching_files(comet_folder, timestamped_folder):
                             with fitz.open() as new_doc:
                                 new_doc.insert_pdf(src_doc)
                                 new_doc.save(new_file_path)
-                                print(f"Overridden: {comet_file_path} -> {new_file_path}")
+                                #print(f"Overridden: {comet_file_path} -> {new_file_path}")
 
                         # Delete the original file in comet_folder
                         os.remove(comet_file_path)
-                        print(f"Deleted: {comet_file_path}")
+                        #print(f"Deleted: {comet_file_path}")
 
-                    except Exception as e:
-                        print(f"Error processing file '{timestamped_filename}': {e}")
+                    except Exception as e: 
+                        raise                                               
+                        #print(f"Error processing file '{timestamped_filename}': {e}")
