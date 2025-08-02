@@ -45,23 +45,27 @@ def record_status(sheet, row_index, result):
         cell.font = openpyxl.styles.Font(color="FF0000")
 
 def email_all_invoices(EXCEL_FILE, tab, TIMESTAMPED_FOLDER):
-    wb, sheet = load_sheet(EXCEL_FILE, tab)
-    from_email, rows = read_email_rows(sheet, TIMESTAMPED_FOLDER)
-    subject, body, signature = load_template(tab)
+    try:
+        wb, sheet = load_sheet(EXCEL_FILE, tab)
+        from_email, rows = read_email_rows(sheet, TIMESTAMPED_FOLDER)
+        subject, body, signature = load_template(tab)
 
-    subject_template = subject
-    body_template = body
-    signature_template = signature
-    for row in rows:        
-        data = {
-            "ACCOUNT": row["account"]
-        }
-        subject = replace_placeholders(subject_template,data)
-        body = replace_placeholders(body_template,data)
-        signature = replace_placeholders(signature_template,data)
+        subject_template = subject
+        body_template = body
+        signature_template = signature
+        for row in rows:        
+            data = {
+                "ACCOUNT": row["account"]
+            }
+            subject = replace_placeholders(subject_template,data)
+            body = replace_placeholders(body_template,data)
+            signature = replace_placeholders(signature_template,data)
 
-        msg = build_message(from_email, row["to"], row["cc"], row["bcc"], subject, body, signature, row["attachment"])
-        result = send_email(msg)
-        record_status(sheet, row["status_row"], result)
+            msg = build_message(from_email, row["to"], row["cc"], row["bcc"], subject, body, signature, row["attachment"])
+            result = send_email(msg)
+            record_status(sheet, row["status_row"], result)
 
-    wb.save(EXCEL_FILE)
+        wb.save(EXCEL_FILE)
+    except Exception as e:
+        print(f"An unexpected error occured: {e} ")
+        raise

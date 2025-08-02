@@ -20,8 +20,32 @@ def discover_actions(action_path="actions"):
                 })
             except Exception as e:
                 print(f"Error loading module {module_name}: {e}")
+                raise
     return registry
 
 def get_label(ui_text, key_path, default="(missing label)"):
     section, key = key_path.split(".")
     return ui_text.get(section, {}).get(key, default)
+
+def standardize_action_output(workflow_func, answers=None, requires_confirmation=True,**metadata):
+    """
+    Wraps a workflow function and optional answers into a standardized action output.
+
+    Parameters:
+        workflow_func (callable): The function that performs the action.
+        answers (dict, optional): Any collected user input.
+        metadata (dict): Optional metadata like description, confirmation flags, etc.
+
+    Returns:
+        dict: A standardized action output with keys:
+            - answers (if provided)
+            - execute (callable)
+            - any extra metadata
+    """
+    output = {
+        "execute": workflow_func, "requires_confirmation": requires_confirmation
+    }
+    if answers:
+        output.update(answers)
+    output.update(metadata)
+    return output

@@ -49,26 +49,33 @@ def handle_action(ui, action):
         print("This action is not yet implemented.")
         msvcrt.getch()
         return
-
     try:
         answers = executor()
-    except Exception as e:
-        print(f"Error collecting input: {e}")
-        msvcrt.getch()
-        return
+        if answers.get("requires_confirmation", False):
+            print(ui.get("review_answers", "Please review your answers:"))
+            for key, val in answers.items():
+                if key not in {"execute", "requires_confirmation"}:
+                    print(f"{key}: {val}")
+            print()
 
-    if isinstance(answers, dict) and "execute" in answers:
-        clear_screen()
-        print(ui.get("program_title", "PROGRAM TITLE"))
-        print(subtitle)
-        print(ui.get("review_answers", "Please review your answers:"))
-        for key, val in answers.items():
-            if key != "execute":
-                print(f"{key}: {val}")
-        print()
-
-        decision = input(ui.get("confirm_prompt", "Press 1 to initiate, 2 to edit, or 3 to cancel: ")).strip()
-        if decision == "1":
+            decision = input(ui.get("confirm_prompt", "Press 1 to initiate, 2 to edit, or 3 to cancel: ")).strip()
+            if decision == "1":
+                try:
+                    result = answers["execute"]()
+                    print(ui.get("action_success", "{action} completed successfully.").replace("{action}", subtitle))
+                except Exception as e:
+                    print(ui.get("action_failed", "{action} failed: {error}")
+                        .replace("{action}", subtitle)
+                        .replace("{error}", str(e)))
+                    raise
+                msvcrt.getch()
+            elif decision == "2":
+                handle_action(ui, action)
+            else:
+                return
+        else:
+            print(ui.get("please_wait", "Please wait while I {action}...")
+                .replace("{action}", subtitle))
             try:
                 result = answers["execute"]()
                 print(ui.get("action_success", "{action} completed successfully.").replace("{action}", subtitle))
@@ -76,19 +83,10 @@ def handle_action(ui, action):
                 print(ui.get("action_failed", "{action} failed: {error}")
                     .replace("{action}", subtitle)
                     .replace("{error}", str(e)))
+                raise
             msvcrt.getch()
-        elif decision == "2":
-            handle_action(ui, action)
-        else:
-            return
-    else:
-        print(ui.get("please_wait", "Please wait while I {action}...")
-            .replace("{action}", subtitle))
-        try:
-            result = executor()
-            print(ui.get("action_success", "{action} completed successfully.").replace("{action}", subtitle))
-        except Exception as e:
-            print(ui.get("action_failed", "{action} failed: {error}")
-                .replace("{action}", subtitle)
-                .replace("{error}", str(e)))
-        msvcrt.getch()
+    except Exception as e:
+        print(f"Error collecting input: {e}")
+        raise
+    finally:
+        return

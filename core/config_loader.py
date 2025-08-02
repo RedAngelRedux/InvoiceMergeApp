@@ -3,8 +3,26 @@
 import json
 import os
 
+from dotenv import load_dotenv
+
+# Load .env into environment variables
+load_dotenv() 
+
+# Load and store .env values
+SMTP_CONFIG = {
+    "host": os.getenv("SMTP_HOST", "localhost"),
+    "port": os.getenv("SMTP_PORT", "25"),
+    "user": os.getenv("SMTP_USER"),
+    "password": os.getenv("SMTP_PASS")
+}
+
+if not SMTP_CONFIG["user"] or not SMTP_CONFIG["password"]:
+    raise ValueError("SMTP credentials are missing!")
+
 def load_config(config_filename="config.json"):
-    base_dir = os.path.dirname(__file__) # This points to core/
+
+    # Ensure physical paths points to core/
+    base_dir = os.path.dirname(__file__)
     config_path = os.path.join(base_dir,"config",config_filename)
 
     """Load configuration settings from a JSON file."""
@@ -12,9 +30,11 @@ def load_config(config_filename="config.json"):
         raise FileNotFoundError(f"Config file not found: {config_path}")
     
     try:
+        # load the JSON config
         with open(config_path, 'r', encoding='utf-8') as f:
             config = json.load(f)
         return config
+    
     except json.JSONDecodeError as e:
         raise ValueError(f"Invalid JSON format in {config_path}: {e}")
 
