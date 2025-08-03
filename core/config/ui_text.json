@@ -20,14 +20,20 @@
         "update_smtp": "Update SMTP"
     },
     "messages": {
-        "error_file_not_found": "File not found.",
-        "error_folder_not_found": "Folder not found.",
         "success_merge": "Invoices successfully merged.",
-        "success_email_sent": "Sent email on {{timestamp}}"
+        "success_email_sent": "Sent email on {{timestamp}}",
+        "goodbye": "Thank you for choosing GloboWeb.com for your application needs.  Have a nice day.",
+        "review_answers": "Please review your answers:  "
     },
     "prompts": {
         "select_menu_item": "Please enter a menu number: ",
         "review_answers": "Please review your answers: ",
-        "confirm_prompt": "Press 1 to proceed, 2 to change your answers, or [ESC] to quit: "
+        "confirm": "Press 1 to proceed, 2 to change your answers, or 3 to cancel:  ",
+        "invalid_choice_continue": "'{{choice}}' is an invalid choice.  Press any key to continue...",
+        "not_implemented": "This feature is not implemented yet.  Press any key to continue..."
+    },
+    "errors": {
+        "file_not_found": "File not found.",
+        "folder_not_found": "Folder not found"
     }
 }

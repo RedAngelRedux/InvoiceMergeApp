@@ -2,20 +2,24 @@
 
 import os
 import msvcrt
-from core.config_loader import load_config
+
+from core.config_loader import load_config, get_nested, get_rendered
 from core.menu_registry import discover_actions, get_label
 
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
 def start_cli():
+    
     ui = load_config("ui_text.json")
     actions = discover_actions()
 
     while True:
+
+        # Display Main Menu Header
         clear_screen()
         print(ui.get("program_title", "PROGRAM TITLE"))
-        print(ui.get("main_menu_title", "Main Menu"))
+        print(get_nested(ui,"main_menu.title","UNTITLED"))
         print()
 
         for i, action in enumerate(actions, 1):
@@ -23,42 +27,56 @@ def start_cli():
             print(f"{i}. {label}")
         print(f"{len(actions)+1}. Quit Application\n")
 
-        choice = input(ui.get("prompt_main_menu", "Please enter the number of the action you'd like to perform: ")).strip()
+        choice = input(get_nested(ui,"prompts.select_menu_item","SELECT MENU ITEM")).strip()
 
         if choice == str(len(actions)+1):
+            print(get_nested(ui,"messages.goodbye","GOODBYE"))
             break
 
         try:
+
             index = int(choice) - 1
             selected = actions[index]
+
         except (ValueError, IndexError):
-            input("Invalid choice. Press any key to continue...")
+            input(get_rendered(ui,"prompts.invalid_choice_continue",choice=choice))
             continue
 
         handle_action(ui, selected)
 
 def handle_action(ui, action):
+
+    # Display Sub-Menu Header
     clear_screen()
     subtitle = get_label(ui, action["label_key"])
     print(ui.get("program_title", "PROGRAM TITLE"))
     print(subtitle)
     print()
 
+    # Unknown Action Invoked
     executor = action["executor"]
     if executor is None:
-        print("This action is not yet implemented.")
+        print(get_nested(ui,"prompts.not_implemented","NOT IMPLEMENTED"))
         msvcrt.getch()
         return
+    
     try:
+
         answers = executor()
+
+        if answers is None:
+            print(get_nested(ui,"prompts.not_implemented","NOT IMPLEMENTED"))
+            msvcrt.getch()
+            return
+
         if answers.get("requires_confirmation", False):
-            print(ui.get("review_answers", "Please review your answers:"))
+            print(get_nested(ui,"messages.review_answers", "REVIEW ANSWERS:  "))
             for key, val in answers.items():
                 if key not in {"execute", "requires_confirmation"}:
                     print(f"{key}: {val}")
             print()
 
-            decision = input(ui.get("confirm_prompt", "Press 1 to initiate, 2 to edit, or 3 to cancel: ")).strip()
+            decision = input(get_nested(ui,"prompts.confirm","1 TO ACCEPT, 2 TO EDIT, 3 TO CANCEL")).strip()
             if decision == "1":
                 try:
                     result = answers["execute"]()

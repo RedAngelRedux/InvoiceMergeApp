@@ -45,3 +45,50 @@ def get_setting(config, key, default=None):
 def get_ui_text():
     with open("config/ui_text.json") as f:
         return json.load(f)
+    
+# def get_nested(data, keys, default=None):
+#     """
+#     Safely access nested dictionary keys.
+    
+#     Args:
+#         data (dict): The dictionary to traverse.
+#         keys (list): List of keys to follow.
+#         default: Value to return if any key is missing.
+    
+#     Returns:
+#         The nested value or default.
+#     """
+#     for key in keys:
+#         if isinstance(data, dict):
+#             data = data.get(key, default)
+#         else:
+#             return default
+#     return data
+
+def get_nested(config: dict, key_path: str, default=None):
+    """
+    Safely retrieves a nested value from a dict using dot notation.
+    """
+    keys = key_path.split(".")
+    for key in keys:
+        if isinstance(config, dict) and key in config:
+            config = config[key]
+        else:
+            return default
+    return config
+
+def render_message(template: str, **kwargs) -> str:
+    """
+    Renders a template string with double-brace placeholders.
+    """
+    safe_template = template.replace("{{", "{").replace("}}", "}")
+    return safe_template.format(**kwargs)
+
+def get_rendered(config: dict, key_path: str, **kwargs) -> str:
+    """
+    Retrieves a template from config and renders it with kwargs.
+    """
+    template = get_nested(config, key_path)
+    if template is None:
+        return f"[Missing template at '{key_path}']"
+    return render_message(template, **kwargs)
