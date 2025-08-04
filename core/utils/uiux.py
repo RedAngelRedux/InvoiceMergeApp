@@ -86,3 +86,34 @@ def prompt_filename(
     print()
     print("*** Too many invalid attempts. Operation aborted ***")
     return None
+
+import re
+from pathlib import Path
+
+def match_file_in_folder(folder, partial, pattern=None):
+    """
+    Checks if any file in the folder matches the given pattern or default rule.
+
+    Args:
+        folder (str or Path): Folder to search in.
+        partial (str): Partial string to match at the start of the filename.
+        pattern (str): Optional regex pattern. If None, defaults to '^partial.*\.pdf$'
+
+    Returns:
+        bool: True if a matching file is found, False otherwise.
+    """
+    folder = Path(folder)
+    if not folder.is_dir():
+        raise ValueError(f"Invalid folder path: {folder}")
+
+    # Default pattern: starts with partial and ends with .pdf
+    if pattern is None:
+        pattern = rf"^{re.escape(partial)}[\w\s]*\.pdf$"
+
+    regex = re.compile(pattern, re.IGNORECASE)
+
+    for file in folder.iterdir():
+        if regex.match(file.name):
+            return True
+
+    return False

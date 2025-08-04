@@ -6,6 +6,24 @@ import openpyxl
 from core.email_builder import load_template, build_message, replace_placeholders
 from core.mailer import send_email
 from core.utils.spinner import Spinner
+from core.utils.uiux import match_file_in_folder
+
+EMAIL_REGEX = re.compile(
+    r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+)
+
+def validate_emails(email_list):
+    """
+    Validates a list of email addresses.
+
+    Args:
+        email_list (list[str]): List of email strings.
+
+    Returns:
+        tuple: (True, []) if all valid, or (False, [invalid_emails])
+    """
+    invalid = [email for email in email_list if not EMAIL_REGEX.match(email)]
+    return (len(invalid) == 0, invalid)
 
 def find_attachment(folder, account):
     pattern = re.compile(rf"^{re.escape(account)}\sINV\s.*\.pdf$", re.IGNORECASE)
@@ -65,12 +83,37 @@ def email_all_invoices(EXCEL_FILE, tab, TIMESTAMPED_FOLDER):
                 body = replace_placeholders(body_template,data)
                 signature = replace_placeholders(signature_template,data)
 
-                if row["attachment"] is None:
-                    record_status(sheet,row["status_row"],"Error - No Attachement Found.")
-                else:
+                still_good = True                
+                error_parts = ["Error: "]
+                attachment_exists = match_file_in_folder(TIMESTAMPED_FOLDER,str(row["account"]))
+                if not attachment_exists:
+                    error_parts.append("No Attachement Found; ")
+                    still_good = False 
+                    
+                result, bad_emails = validate_emails(row["to"])
+                if bad_emails:
+                    error_parts.append("Invalid E-mails in [TO] column - ")
+                    error_parts.extend(bad_emails)
+                    still_good = False
+
+                result, bad_emails = validate_emails(row["cc"])
+                if bad_emails:
+                    error_parts.append("Invalid E-mails in [CC] column - ")
+                    error_parts.extend(bad_emails)
+                    still_good = False
+
+                result, bad_emails = validate_emails(row["bcc"])
+                if bad_emails:
+                    error_parts.append("Invalid E-mails in [BCC] column - ")
+                    error_parts.extend(bad_emails)
+                    still_good = False
+
+                if still_good:
                     msg = build_message(from_email, row["to"], row["cc"], row["bcc"], subject, body, signature, row["attachment"])
                     result = send_email(msg)
                     record_status(sheet, row["status_row"], result)
+                else:
+                    record_status(sheet,row["status_row"]," ".join(error_parts))
 
             wb.save(EXCEL_FILE)
     except Exception as e:
