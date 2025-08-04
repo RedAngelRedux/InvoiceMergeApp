@@ -29,8 +29,8 @@
         "select_menu_item": "Please enter a menu number: ",
         "review_answers": "Please review your answers: ",
         "confirm": "Press 1 to proceed, 2 to change your answers, or 3 to cancel:  ",
-        "invalid_choice_continue": "'{{choice}}' is an invalid choice.  Press any key to continue...",
-        "not_implemented": "This feature is not implemented yet.  Press any key to continue..."
+        "invalid_choice_continue": "'{{choice}}' is an invalid choice.",
+        "not_implemented": "{{feature}} is not implemented yet."
     },
     "errors": {
         "file_not_found": "File not found.",

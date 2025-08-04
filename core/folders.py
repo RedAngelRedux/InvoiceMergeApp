@@ -30,10 +30,15 @@ def get_default_folder_paths():
 
     return folder_names
 
-def create_timestamped_folder():
+def generate_timestamped_folder_name():
     now = datetime.datetime.now()
-    timestamped_folder = now.strftime('%y%m_Invoices')
+    return now.strftime('%y%m_Invoices')
+
+def create_timestamped_folder(foldername=None):
+    # now = datetime.datetime.now()
+    # timestamped_folder = now.strftime('%y%m_Invoices')
+
+    timestamped_folder = foldername if foldername is not None else generate_timestamped_folder_name()
+    #timestamped_folder = generate_timestamped_folder_name()
     os.makedirs(timestamped_folder, exist_ok=True)
     return timestamped_folder
-
-
