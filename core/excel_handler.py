@@ -44,6 +44,8 @@ def record_status(sheet, row_index, result):
     cell.value = result
     if result.startswith("Error"):
         cell.font = openpyxl.styles.Font(color="FF0000")
+    else:
+        cell.font = openpyxl.styles.Font(color="000000")
 
 def email_all_invoices(EXCEL_FILE, tab, TIMESTAMPED_FOLDER):
     try:
@@ -63,9 +65,12 @@ def email_all_invoices(EXCEL_FILE, tab, TIMESTAMPED_FOLDER):
                 body = replace_placeholders(body_template,data)
                 signature = replace_placeholders(signature_template,data)
 
-                msg = build_message(from_email, row["to"], row["cc"], row["bcc"], subject, body, signature, row["attachment"])
-                result = send_email(msg)
-                record_status(sheet, row["status_row"], result)
+                if row["attachment"] is None:
+                    record_status(sheet,row["status_row"],"Error - No Attachement Found.")
+                else:
+                    msg = build_message(from_email, row["to"], row["cc"], row["bcc"], subject, body, signature, row["attachment"])
+                    result = send_email(msg)
+                    record_status(sheet, row["status_row"], result)
 
             wb.save(EXCEL_FILE)
     except Exception as e:
