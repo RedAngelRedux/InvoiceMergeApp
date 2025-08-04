@@ -2,8 +2,14 @@
 
 import json
 import os
+import sys
 
 from dotenv import load_dotenv
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
 
 # Load .env into environment variables
 load_dotenv() 
@@ -22,8 +28,9 @@ if not SMTP_CONFIG["user"] or not SMTP_CONFIG["password"]:
 def load_config(config_filename="config.json"):
 
     # Ensure physical paths points to core/
-    base_dir = os.path.dirname(__file__)
-    config_path = os.path.join(base_dir,"config",config_filename)
+    # base_dir = os.path.dirname(__file__)
+    # config_path = os.path.join(base_dir,"config",config_filename)
+    config_path = resource_path(f"config/{config_filename}")
 
     """Load configuration settings from a JSON file."""
     if not os.path.exists(config_path):
