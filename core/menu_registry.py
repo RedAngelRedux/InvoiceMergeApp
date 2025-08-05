@@ -1,10 +1,12 @@
 import importlib
 import os
-import json
+
+from core.config_loader import resource_path
 
 def discover_actions(action_path="actions"):
     base_dir = os.path.dirname(__file__) # This points to core/
     actions_folder = os.path.join(base_dir,action_path)
+    # actions_folder = resource_path(f"{action_path}")
 
     registry = []
     for filename in os.listdir(actions_folder):

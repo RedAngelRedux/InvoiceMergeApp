@@ -30,7 +30,7 @@ def load_config(config_filename="config.json"):
     # Ensure physical paths points to core/
     # base_dir = os.path.dirname(__file__)
     # config_path = os.path.join(base_dir,"config",config_filename)
-    config_path = resource_path(f"config/{config_filename}")
+    config_path = resource_path(f"config\{config_filename}")
 
     """Load configuration settings from a JSON file."""
     if not os.path.exists(config_path):
