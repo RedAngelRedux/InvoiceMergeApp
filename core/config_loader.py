@@ -18,12 +18,12 @@ load_dotenv()
 SMTP_CONFIG = {
     "host": os.getenv("SMTP_HOST", "localhost"),
     "port": os.getenv("SMTP_PORT", "25"),
-    "user": os.getenv("SMTP_USER"),
-    "password": os.getenv("SMTP_PASS")
+    # "user": os.getenv("SMTP_USER"),
+    # "password": os.getenv("SMTP_PASS")
 }
 
-if not SMTP_CONFIG["user"] or not SMTP_CONFIG["password"]:
-    raise ValueError("SMTP credentials are missing!")
+# if not SMTP_CONFIG["user"] or not SMTP_CONFIG["password"]:
+#     raise ValueError("SMTP credentials are missing!")
 
 def load_config(config_filename="config.json"):
 

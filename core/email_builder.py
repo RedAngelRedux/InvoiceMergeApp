@@ -35,7 +35,7 @@ def load_template(tab_name):
     signature = root.findtext("Signature")
     return subject, body, signature
 
-def build_message(from_addr, to, cc, bcc, subject, body, signature, attachment):
+def build_message(from_addr, to, cc, bcc, subject, body, signature, attachment,password):
     full_body = f"{body}\n\n{signature}"
     return {
         "from": from_addr,
@@ -44,5 +44,6 @@ def build_message(from_addr, to, cc, bcc, subject, body, signature, attachment):
         "bcc": bcc,
         "subject": subject,
         "body": full_body,
-        "attachment": attachment
+        "attachment": attachment,
+        "password":  password
     }

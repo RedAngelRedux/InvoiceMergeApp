@@ -1,12 +1,13 @@
 import os
 import re
+import getpass
 
 import openpyxl
 
 from core.email_builder import load_template, build_message, replace_placeholders
 from core.mailer import send_email
 from core.utils.spinner import Spinner
-from core.utils.uiux import match_file_in_folder
+from core.utils.uiux import match_file_in_folder, get_masked_input
 
 EMAIL_REGEX = re.compile(
     r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
@@ -67,10 +68,15 @@ def record_status(sheet, row_index, result):
 
 def email_all_invoices(EXCEL_FILE, tab, TIMESTAMPED_FOLDER):
     try:
+
+        wb, sheet = load_sheet(EXCEL_FILE, tab)
+        from_email, rows = read_email_rows(sheet, TIMESTAMPED_FOLDER)
+        subject, body, signature = load_template(tab)
+
+        # password = getpass.getpass(f"Enter the password for {from_email}:  ")
+        password = get_masked_input(f"Enter the password for {from_email}:  ")
+
         with Spinner(f"Sending emails for group {tab}"):
-            wb, sheet = load_sheet(EXCEL_FILE, tab)
-            from_email, rows = read_email_rows(sheet, TIMESTAMPED_FOLDER)
-            subject, body, signature = load_template(tab)
 
             subject_template = subject
             body_template = body
@@ -109,7 +115,7 @@ def email_all_invoices(EXCEL_FILE, tab, TIMESTAMPED_FOLDER):
                     still_good = False
 
                 if still_good:
-                    msg = build_message(from_email, row["to"], row["cc"], row["bcc"], subject, body, signature, row["attachment"])
+                    msg = build_message(from_email, row["to"], row["cc"], row["bcc"], subject, body, signature, row["attachment"], password)
                     result = send_email(msg)
                     record_status(sheet, row["status_row"], result)
                 else:

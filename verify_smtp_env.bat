@@ -8,7 +8,8 @@ echo Checking SMTP environment variables...
 echo.
 
 :: List of required variables
-set VARS=SMTP_HOST SMTP_PORT SMTP_USER SMTP_PASS
+@REM set VARS=SMTP_HOST SMTP_PORT SMTP_USER SMTP_PASS
+set VARS=SMTP_HOST SMTP_PORT
 
 for %%V in (%VARS%) do (
     call :CheckVar %%V

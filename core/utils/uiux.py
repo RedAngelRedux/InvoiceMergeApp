@@ -1,4 +1,6 @@
 # core/utils/uiux.py
+import msvcrt
+
 from pathlib import Path
 
 def file_exists(filename) -> bool:
@@ -117,3 +119,20 @@ def match_file_in_folder(folder, partial, pattern=None):
             return True
 
     return False
+
+def get_masked_input(prompt="Password: "):
+    print(prompt, end='', flush=True)
+    password = ''
+    while True:
+        char = msvcrt.getch()
+        if char in {b'\r', b'\n'}:
+            print()
+            break
+        elif char == b'\x08':  # Backspace
+            if password:
+                password = password[:-1]
+                print('\b \b', end='', flush=True)
+        else:
+            password += char.decode('utf-8')
+            print('*', end='', flush=True)
+    return password

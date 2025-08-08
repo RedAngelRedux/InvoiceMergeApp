@@ -9,8 +9,10 @@ def send_email(message):
 
     host = SMTP_CONFIG["host"]
     port = SMTP_CONFIG["port"]
-    user = SMTP_CONFIG["user"]
-    password = SMTP_CONFIG["password"]
+    # user = SMTP_CONFIG["user"]
+    user = message["from"]
+    # password = SMTP_CONFIG["password"]
+    password = message["password"]
     
     try:
         msg = EmailMessage()
@@ -31,7 +33,7 @@ def send_email(message):
                     subtype="pdf",
                     filename=os.path.basename(message["attachment"]))
 
-        with smtplib.SMTP_SSL(host, port) as server:            
+        with smtplib.SMTP_SSL(host, port) as server:
             server.login(user, password)
             server.send_message(msg)
 
