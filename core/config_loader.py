@@ -22,6 +22,14 @@ SMTP_CONFIG = {
     # "password": os.getenv("SMTP_PASS")
 }
 
+IMAP_CONFIG = {
+    "host": os.getenv("IMAP_HOST",'localhost'),
+    "port": os.getenv("IMAP_PORT","993"),
+    "archive_folder": os.getenv("IMAP_ARCHIVE_FOLDER","InvoiceArchive")
+    # "user": os.getenv("IMAP_USER"),
+    # "password": os.getenv("IMAP_PASS")
+}
+
 # if not SMTP_CONFIG["user"] or not SMTP_CONFIG["password"]:
 #     raise ValueError("SMTP credentials are missing!")
 

@@ -1,13 +1,13 @@
 import os
 import re
-import getpass
 
 import openpyxl
 
 from core.email_builder import load_template, build_message, replace_placeholders
-from core.mailer import send_email
+from core.mailer import send_email, archive_email
 from core.utils.spinner import Spinner
 from core.utils.uiux import match_file_in_folder, get_masked_input
+from core.config_loader import IMAP_CONFIG
 
 EMAIL_REGEX = re.compile(
     r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
@@ -43,7 +43,7 @@ def read_email_rows(sheet, folder):
     from_email = sheet['A1'].value
     records = []
     for i, row in enumerate(sheet.iter_rows(min_row=3, values_only=True), start=3):
-        account, to, cc, bcc, status = row
+        account, to, cc, bcc, status, archive = row
         if status and status.lower().startswith("sent"):
             continue
         attachment = find_attachment(folder, str(account))
@@ -53,9 +53,19 @@ def read_email_rows(sheet, folder):
             "cc": cc.split(";") if cc else [],
             "bcc": bcc.split(";") if bcc else [],
             "status_row": i,
+            "archive_row": i,
             "attachment": attachment
         })
     return from_email, records
+
+def record_archive(sheet, row_index, result):
+    col = "F"
+    cell = sheet[f"{col}{row_index}"]
+    cell.value = result
+    if result.startswith("Error"):
+        cell.font = openpyxl.styles.Font(color="FF0000")
+    else:
+        cell.font = openpyxl.styles.Font(color="000000")
 
 def record_status(sheet, row_index, result):
     col = "E"
@@ -96,28 +106,40 @@ def email_all_invoices(EXCEL_FILE, tab, TIMESTAMPED_FOLDER):
                     error_parts.append("No Attachement Found; ")
                     still_good = False 
                     
-                result, bad_emails = validate_emails(row["to"])
-                if bad_emails:
+                valid, bad_emails = validate_emails(row["to"])
+                if not valid:
                     error_parts.append("Invalid E-mails in [TO] column - ")
                     error_parts.extend(bad_emails)
                     still_good = False
 
-                result, bad_emails = validate_emails(row["cc"])
-                if bad_emails:
+                valid, bad_emails = validate_emails(row["cc"])
+                if not valid:
                     error_parts.append("Invalid E-mails in [CC] column - ")
                     error_parts.extend(bad_emails)
                     still_good = False
 
-                result, bad_emails = validate_emails(row["bcc"])
-                if bad_emails:
+                valid, bad_emails = validate_emails(row["bcc"])
+                if not valid:
                     error_parts.append("Invalid E-mails in [BCC] column - ")
                     error_parts.extend(bad_emails)
                     still_good = False
 
                 if still_good:
                     msg = build_message(from_email, row["to"], row["cc"], row["bcc"], subject, body, signature, row["attachment"], password)
-                    result = send_email(msg)
-                    record_status(sheet, row["status_row"], result)
+                    status, success = send_email(msg)
+                    record_status(sheet,row["status_row"],status)
+                    if success:
+                        status, success = archive_email(msg,IMAP_CONFIG["archive_folder"])
+                        record_archive(sheet,row["status_row"],status)                        
+                    # comment, success = send_email(msg)
+                    # if success:
+                    #     arc_comment, arc_success = archive_email(msg)
+                    #     if arc_success:
+                    #         record_status(sheet, row["status_row"], comment.join(arc_comment))
+                    #     else:
+                    #         record_status(sheet, row["status_row"], comment.join(arc_comment))
+                    # else:
+                    #     record_status(sheet,row["status_row"],comment)
                 else:
                     record_status(sheet,row["status_row"]," ".join(error_parts))
 

@@ -25,5 +25,12 @@ setx SMTP_PORT 465
 
 echo.
 echo SMTP Server environment variables have been set.
+:: echo You may need to restart your command prompt for changes to take effect.
+pause
+
+echo Setting up IMAP environment variables...
+setx IMAP_ARCHIVE_FOLDER InvoiceArchive
+echo.
+echo IMAP environment variables have been set.
 echo You may need to restart your command prompt for changes to take effect.
 pause
