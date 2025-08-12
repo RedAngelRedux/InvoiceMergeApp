@@ -50,6 +50,7 @@ def find_sent_folder(imap):
         for folder in folder_names:
             if folder.lower() == candidate.lower():
                 return f'"{folder}"'
+    return "InvoiceArchive"
 
     # Fallback: return first folder that contains "sent"
     for folder in folder_names:
@@ -85,7 +86,7 @@ def folder_exists(imap, folder: str) -> bool:
     # print(f"Folder '{folder}' not found.")
     return False
 
-def archive_sent_email(imap: imaplib.IMAP4_SSL, msg_bytes: bytes, folder: str = "Sent"):
+def archive_sent_email(imap: imaplib.IMAP4_SSL, msg_bytes: bytes, folder: str = "InvoiceArchive"):
     """
     Uploads a sent email message to the specified IMAP folder.
 

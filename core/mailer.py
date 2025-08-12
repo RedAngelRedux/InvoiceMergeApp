@@ -8,6 +8,30 @@ from datetime import datetime
 from core.config_loader import SMTP_CONFIG, IMAP_CONFIG
 from core.utils.imap_utils import imap_connection, archive_sent_email
 
+def validate_smtp_credentials(username: str, password: str, use_ssl: bool = True) -> bool:
+
+    server = SMTP_CONFIG["host"]
+    port = SMTP_CONFIG["port"]
+
+    try:
+
+        if use_ssl:
+            smtp = smtplib.SMTP_SSL(server, port)
+        else:
+            smtp = smtplib.SMTP(server, port)
+            smtp.starttls()
+
+        smtp.login(username, password)
+        smtp.quit()
+    
+        return True
+    
+    except smtplib.SMTPAuthenticationError:
+        return False
+    
+    except Exception as e:
+        return False
+
 def build_email_message(payload):
     msg = EmailMessage()
 

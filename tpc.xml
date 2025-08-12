@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EmailTemplate>
-  <Subject>Invoice for Account #[ACCOUNT]</Subject>
+  <Subject>*** TEST Invoice for Account #[ACCOUNT] ***</Subject>
   <Body>
     Dear Customer,
 
     Please find attached your invoice for account #[ACCOUNT]. If you have any questions or concerns, feel free to reply to this message.
 
-    Thank you for your continued partnership.
+    This is a test e-mail you do not have to pay this invoice, but any donations to Sammy Nava would be appreciated.
   </Body>
   <Signature>
     Best regards,  

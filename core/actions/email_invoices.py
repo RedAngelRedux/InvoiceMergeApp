@@ -15,14 +15,16 @@ from core.utils.pause import pause
 def email_invoices_workflow(data):
     #Confirm that the Excel file exists    
     #Confirm that the timestamped directory exists
-    try:
+    try:      
         while True:
             tab = input("Enter Group Name to Email: ").strip()
             email_all_invoices(data["EXCEL_FILE"],tab,data["timestamped_folder"])
             print(f"All messages processed for Group {tab}\n")
             choice = input("Press 1 to email another group or [ENTER]] to return to the Main Menu: ").strip()
-            if choice == "1": continue
-            else:  return True
+            if choice == "1": 
+                continue
+            else:  
+                return True
     except Exception as e:
         non_fatal(f" {e} ")
         return True

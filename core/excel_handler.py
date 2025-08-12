@@ -1,10 +1,10 @@
 import os
 import re
-
+import smtplib
 import openpyxl
 
 from core.email_builder import load_template, build_message, replace_placeholders
-from core.mailer import send_email, archive_email
+from core.mailer import send_email, archive_email, validate_smtp_credentials
 from core.utils.spinner import Spinner
 from core.utils.uiux import match_file_in_folder, get_masked_input
 
@@ -84,6 +84,8 @@ def email_all_invoices(EXCEL_FILE, tab, TIMESTAMPED_FOLDER):
 
         # password = getpass.getpass(f"Enter the password for {from_email}:  ")
         password = get_masked_input(f"Enter the password for {from_email}:  ")
+        if validate_smtp_credentials(from_email,password) != True:
+            raise smtplib.SMTPAuthenticationError(535, b"Either the username or password is wrong.")
 
         with Spinner(f"Sending emails for group {tab}"):
 
