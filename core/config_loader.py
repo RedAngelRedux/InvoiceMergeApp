@@ -25,7 +25,7 @@ SMTP_CONFIG = {
 IMAP_CONFIG = {
     "host": os.getenv("IMAP_HOST",'localhost'),
     "port": os.getenv("IMAP_PORT","993"),
-    "archive_folder": os.getenv("IMAP_ARCHIVE_FOLDER","InvoiceArchive")
+    #"archive_folder": os.getenv("IMAP_ARCHIVE_FOLDER","InvoiceArchive")
     # "user": os.getenv("IMAP_USER"),
     # "password": os.getenv("IMAP_PASS")
 }

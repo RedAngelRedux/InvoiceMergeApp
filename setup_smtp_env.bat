@@ -29,7 +29,9 @@ echo SMTP Server environment variables have been set.
 pause
 
 echo Setting up IMAP environment variables...
-setx IMAP_ARCHIVE_FOLDER InvoiceArchive
+setx IMAP_HOST = imap.ionos.com
+setx IMAP_PORT = 993
+::setx IMAP_ARCHIVE_FOLDER InvoiceArchive
 echo.
 echo IMAP environment variables have been set.
 echo You may need to restart your command prompt for changes to take effect.

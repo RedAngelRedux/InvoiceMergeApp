@@ -28,6 +28,36 @@ def imap_connection(server: str, username: str, password: str):
                 print(f"IMAP logout failed: {e}")
                 # logging.warning(f"IMAP logout failed: {e}")
 
+# Common Sent folder names (ordered by priority)
+SENT_CANDIDATES = [
+    "Sent",
+    "Sent Items",
+    "Sent Mail",
+    "Sent Messages",
+    "[Gmail]/Sent Mail",
+]
+
+def find_sent_folder(imap):
+    status, folders = imap.list()
+    if status != "OK":
+        raise RuntimeError("Failed to list folders")
+
+    # Normalize folder names
+    folder_names = [f.decode().split(' "/" ')[-1].strip('"') for f in folders]
+
+    # Try to find a match
+    for candidate in SENT_CANDIDATES:
+        for folder in folder_names:
+            if folder.lower() == candidate.lower():
+                return f'"{folder}"'
+
+    # Fallback: return first folder that contains "sent"
+    for folder in folder_names:
+        if "sent" in folder.lower():
+            return f'"{folder}"'
+
+    raise ValueError("No Sent folder found")
+
 # def folder_exists(imap: imaplib.IMAP4_SSL, folder: str) -> bool:
 #     typ, folders = imap.list()
 #     if typ != "OK":
@@ -65,6 +95,7 @@ def archive_sent_email(imap: imaplib.IMAP4_SSL, msg_bytes: bytes, folder: str = 
         folder (str): Target folder name
     """
     try:
+        folder = find_sent_folder(imap)
         if folder_exists(imap,folder):
             imap.append(folder, '', imaplib.Time2Internaldate(time.time()), msg_bytes)
             return True

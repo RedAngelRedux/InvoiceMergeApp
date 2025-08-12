@@ -7,7 +7,6 @@ from core.email_builder import load_template, build_message, replace_placeholder
 from core.mailer import send_email, archive_email
 from core.utils.spinner import Spinner
 from core.utils.uiux import match_file_in_folder, get_masked_input
-from core.config_loader import IMAP_CONFIG
 
 EMAIL_REGEX = re.compile(
     r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
@@ -129,7 +128,7 @@ def email_all_invoices(EXCEL_FILE, tab, TIMESTAMPED_FOLDER):
                     status, success = send_email(msg)
                     record_status(sheet,row["status_row"],status)
                     if success:
-                        status, success = archive_email(msg,IMAP_CONFIG["archive_folder"])
+                        status, success = archive_email(msg)
                         record_archive(sheet,row["status_row"],status)                        
                     # comment, success = send_email(msg)
                     # if success:
