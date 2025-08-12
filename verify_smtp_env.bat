@@ -9,7 +9,7 @@ echo.
 
 :: List of required variables
 @REM set VARS=SMTP_HOST SMTP_PORT SMTP_USER SMTP_PASS
-set VARS=SMTP_HOST SMTP_PORT
+set VARS=SMTP_HOST SMTP_PORT IMAP_HOST IMAP_PORT
 
 for %%V in (%VARS%) do (
     call :CheckVar %%V
