@@ -16,6 +16,7 @@ venv.bak/
 build/
 develop-eggs/
 dist/
+distV32
 downloads/
 eggs/
 .eggs/
