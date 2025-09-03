@@ -59,7 +59,7 @@ def rename_and_split_pdf_files(folder):
 
                     # Check each pattern
                     patterns_weight = [r'Period: To \d{2}/\d{2}/\d{4} \d{2}/\d{2}/\d{4}(\d+)\n']
-                    patterns_rapid = [r'(\d+)\sACCOUNT NO:']
+                    patterns_rapid = [r'(\d+)\sACCOUNT\s?NO:']
                     patterns_unison = [r'Account No.:\s*(\d+)']
                     patterns_misc = [r'ACCT\s*(\d+)',r'ACCT:\s*(\d+)',r'Acct#:\s+(\w{1,10})',r'ACCT\s*#\s*([A-Za-z0-9]+)']
 
