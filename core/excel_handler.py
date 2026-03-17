@@ -41,8 +41,9 @@ def load_sheet(file_name, tab_name):
 def read_email_rows(sheet, folder):
     from_email = sheet['A1'].value
     records = []
-    for i, row in enumerate(sheet.iter_rows(min_row=3, values_only=True), start=3):
-        account, to, cc, bcc, status, archive = row
+    for i, row in enumerate(sheet.iter_rows(min_row=3, max_col=6, values_only=True), start=3):
+        safe = list(row[:6]) + [None] * (6 - len(row))
+        account, to, cc, bcc, status, archive = safe
         if status and status.lower().startswith("sent"):
             continue
         attachment = find_attachment(folder, str(account))
